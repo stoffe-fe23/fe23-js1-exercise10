@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Övning 10 - API</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <!-- DOGS -->
+    <div id="dog-container">
+      <h2>Dogs (Dog API)</h2>
+      <form id="dog-form">
+        <label for="dog-breed">Show breed:</label>
+        <select id="dog-breed" name="dog-breed">
+          <option value="">-- ALL --</option>
+        </select>
+        <label for="dog-amount">Number of pictures:</label>
+        <input type="number" id="dog-amount" name="dog-amount" min="1" max="20" value="1" />
+        <button id="dog-submit">Find random dogs!</button>
+      </form>
+      <div id="dog-results"></div>
+      <div id="dog-output"></div>
+    </div>
+    <!-- BEER -->
+    <div id="beer-container">
+      <h2>Beer (Punk API)</h2>
+      <form id="beer-form">
+        <label for="beer_name">Beer name:</label>
+        <input type="text" id="beer_name" name="beer_name" value="" />
+        <label for="food">Food pairing:</label>
+        <input type="text" id="food" name="food" value="" />
+        <label for="brewed_before">Brewed before (MM-YYYY):</label>
+        <input type="text" id="brewed_before" name="brewed_before" value="" placeholder="11-2023" pattern="^(0[1-9]|1[0-2])-(18|19|20)\d{2}$" />
+        <button id="beer-submit">Search!</button>
+      </form>
+      <div id="beer-output"></div>
+    </div>
+    <!-- CHUCK NORRIS -->
+    <div id="chuck-container">
+      <h2>Chuck Norris Jokes (Chuck Norris API)</h2>
+      <form id="chuck-form">
+        <label for="chuck-category">Category:</label>
+        <select id="chuck-category" name="chuck-category">
+          <option value="">-- ALL --</option>
+        </select>
+        <button id="chuck-submit">Tell me a joke!</button>
+      </form>
+      <div id="chuck-output"></div>
+    </div>
+    <!-- COUNTRIES -->
+    <div id="country-container">
+      <h2>Countries (Countries API)</h2>
+      <form id="country-form">
+        <label for="country-search">Search for:</label>
+        <select id="country-search">
+          <option value="country-name">Country</option>
+          <option value="country-language">Language</option>
+          <option value="country-capital">Capital</option>
+          <option value="country-phone">Phone code</option>
+        </select>
+        <select id="country-name" name="country-name" class="filter show">
+          <option value="">-- ANY --</option>
+        </select>
+        <input type="text" id="country-language" name="country-language" class="filter" />
+        <input type="text" id="country-capital" name="country-capital" class="filter" />
+        <input type="text" id="country-phone" name="country-phone" class="filter" />
+        <fieldset>
+          <h3>Show information</h3>
+          <input type="checkbox" checked name="fields" id="field-name" value="name" /><label for="field-name">Name</label>
+          <input type="checkbox" checked name="fields" id="field-population" value="population" /><label for="field-population">Population</label>
+          <input type="checkbox" checked name="fields" id="field-timezone" value="timezones" /><label for="field-timezone">Timezone</label>
+          <input type="checkbox" checked name="fields" id="field-flag" value="flags" /><label for="field-flag">Flag</label>
+          <input type="checkbox" checked name="fields" id="field-language" value="languages" /><label for="field-language">Languages</label>
+          <input type="checkbox" checked name="fields" id="field-region" value="region" /><label for="field-region">Region</label>
+          <input type="checkbox" checked name="fields" id="field-capital" value="capital" /><label for="field-capital">Capital</label>
+        </fieldset>
+        <button id="country-submit">Search</button>
+      </form>
+      <div id="country-output"></div>
+    </div>
+  </body>
+</html>

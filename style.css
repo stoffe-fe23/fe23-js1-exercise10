@@ -1,0 +1,152 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+}
+
+#dog-container {
+  margin: 0.5rem;
+  padding: 1rem;
+  background-color: rgb(220, 220, 255);
+}
+
+#beer-container {
+  margin: 0.5rem;
+  padding: 1rem;
+  background-color: rgb(220, 220, 220);
+}
+
+#chuck-container {
+  margin: 0.5rem;
+  padding: 1rem;
+  background-color: rgb(255, 220, 255);
+}
+
+#country-container {
+  margin: 0.5rem;
+  padding: 1rem;
+  background-color: rgb(220, 255, 255);
+}
+
+form,
+#chuck-form,
+#beer-form,
+#dog-form {
+  padding: 1rem;
+  margin: 0.5rem;
+  border: 1px solid black;
+}
+
+select,
+#chuck-form input,
+#beer-form input,
+#dog-form input {
+  margin-right: 2rem;
+}
+
+#chuck-output,
+#beer-output,
+#dog-output {
+  margin-top: 3rem;
+}
+
+#dog-output {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+#dog-output figure {
+  max-width: 350px;
+  flex: 1 1 350px;
+}
+
+#dog-output figure img {
+  width: 100%;
+}
+
+.beerimage {
+  max-height: 250px;
+  float: right;
+  margin: 1rem;
+}
+
+.beerbox {
+  padding: 1rem;
+  margin: 0.5rem;
+  min-height: 270px;
+  background-color: black;
+  color: white;
+  max-width: 800px;
+}
+
+#chuck-category,
+#dog-breed,
+#dog-breed option {
+  text-transform: capitalize;
+}
+
+#dog-results {
+  text-align: center;
+  font-weight: bold;
+}
+
+.jokebox {
+  background-color: rgba(0, 0, 0, 0.25);
+  padding: 0.4rem 0.8rem;
+  margin: 0.5rem;
+}
+
+.filter {
+  display: none;
+}
+
+.filter.show {
+  display: inline;
+}
+
+#country-search {
+  display: inline;
+}
+
+#country-container fieldset label {
+  margin-right: 2rem;
+}
+
+.flagbox {
+  font-size: 9rem;
+}
+
+#country-output {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.countrybox {
+  max-width: 350px;
+  border: 1px solid black;
+  margin: 0.5rem;
+  padding: 1rem;
+}
+
+.subheading {
+  font-weight: 700;
+  font-size: 1em;
+}
+
+.countrybox ul {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+.countrybox h3 {
+  margin-bottom: 0px;
+}
+
+.nativenames {
+  margin-bottom: 1rem;
+  font-style: italic;
+}
