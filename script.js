@@ -229,25 +229,6 @@ function buildCountryMenus(countries) {
     }
 }
 
-////////////////////////////////////////////////////////////////////////////////////////
-// Hämta och returnera data från API
-async function fetchAPI(fetchURL, callbackFunc, errorFunc=errorHandler) {
-    try {
-        const response = await fetch(fetchURL);
-        if (!response.ok) 
-            throw new Error(`Ett fel uppstod: ${response.status}`);
-        const result = await response.json();
-        callbackFunc(result);
-    }
-    catch (err) {
-        errorFunc(err);
-    }
-}
-
-function errorHandler(error) {
-    console.log("FetchAPI Error", error);
-    alert("Problem att hämta från API: " + error);
-}
 
 ////////////////////////////////////////////////////////////////////////////////////////
 // Visa info om hund(ar) på sidan
@@ -406,4 +387,25 @@ function showCountry(countries) {
 
         outBox.appendChild(countryBox);
     }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////
+// Hämta och returnera data från API
+async function fetchAPI(fetchURL, callbackFunc, errorFunc=errorHandler) {
+    try {
+        const response = await fetch(fetchURL);
+        if (!response.ok) 
+            throw new Error(`Fetch error: ${response.status}`);
+        const result = await response.json();
+        callbackFunc(result);
+    }
+    catch (err) {
+        errorFunc(err);
+    }
+}
+
+function errorHandler(error) {
+    console.log("FetchAPI Error", error);
+    alert("Problem att hämta från API: " + error);
 }
