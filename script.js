@@ -232,9 +232,15 @@ function buildCountryMenus(countries) {
 ////////////////////////////////////////////////////////////////////////////////////////
 // Hämta och returnera data från API
 async function fetchAPI(fetchURL, callback) {
+    try {
     const response = await fetch(fetchURL);
     const result = await response.json();
     callback(result);
+    }
+    catch (err) {
+        console.log("FetchAPI Error", err);
+        alert("Problem att hämta från API!");
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
