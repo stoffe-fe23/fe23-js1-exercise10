@@ -231,16 +231,22 @@ function buildCountryMenus(countries) {
 
 ////////////////////////////////////////////////////////////////////////////////////////
 // Hämta och returnera data från API
-async function fetchAPI(fetchURL, callback) {
+async function fetchAPI(fetchURL, callbackFunc, errorFunc=errorHandler) {
     try {
-    const response = await fetch(fetchURL);
-    const result = await response.json();
-    callback(result);
+        const response = await fetch(fetchURL);
+        if (!response.ok) 
+            throw new Error(`Ett fel uppstod: ${response.status}`);
+        const result = await response.json();
+        callbackFunc(result);
     }
     catch (err) {
-        console.log("FetchAPI Error", err);
-        alert("Problem att hämta från API!");
+        errorFunc(err);
     }
+}
+
+function errorHandler(error) {
+    console.log("FetchAPI Error", error);
+    alert("Problem att hämta från API: " + error);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
