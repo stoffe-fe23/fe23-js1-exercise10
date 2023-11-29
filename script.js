@@ -1,24 +1,12 @@
-let selectedFields = [];
 
-////////////////////////////////////////////////////////////////////////////////////////
-// Väljare för sök-kriterier för länder
-document.querySelector("#country-search").addEventListener("change", (event) => {
-    const elements = document.querySelectorAll(".filter");
-    for (const element of elements) {
-        console.log("COMP", element.id, event.currentTarget.value);
-        if (element.id != event.currentTarget.value) {
-            element.classList.remove("show");
-            element.value = "";
-        }
-        else {
-            element.classList.add("show");
-        }
-    }
-});
+// Hämta tillåtna värden och bygg filter-menyer
+fetchAPI("https://dog.ceo/api/breeds/list/all", buildDogBreedsMenu);    
+fetchAPI("https://api.chucknorris.io/jokes/categories", buildChuckCategoryMenu);
+fetchAPI("https://restcountries.com/v3.1/all?fields=cca2,name,languages,capital", buildCountryMenus);
 
 
 ////////////////////////////////////////////////////////////////////////////////////////
-// Filter-formuläret för öl
+// Submit-handler för filter-formuläret för öl
 document.querySelector("#beer-form").addEventListener("submit", (event) => {
     event.preventDefault();
     
@@ -43,7 +31,7 @@ document.querySelector("#beer-form").addEventListener("submit", (event) => {
 
 
 ////////////////////////////////////////////////////////////////////////////////////////
-// Filter-formuläret för hundar
+// Submit-handler för filter-formuläret för hundar
 document.querySelector("#dog-form").addEventListener("submit", (event) => {
     event.preventDefault();
     
@@ -62,7 +50,7 @@ document.querySelector("#dog-form").addEventListener("submit", (event) => {
 
 
 ////////////////////////////////////////////////////////////////////////////////////////
-// Filter-formuläret för skämt
+// Submit-handler för ilter-formuläret för skämt
 document.querySelector("#chuck-form").addEventListener("submit", (event) => {
     event.preventDefault();
     
@@ -79,19 +67,17 @@ document.querySelector("#chuck-form").addEventListener("submit", (event) => {
 
 
 ////////////////////////////////////////////////////////////////////////////////////////
-// Filter-formuläret länder
+// Submit-handler för filter-formuläret länder
 document.querySelector("#country-form").addEventListener("submit", (event) => {
     event.preventDefault();
     
     const filterCountry = document.querySelector("#country-name").value;
     const filterLanguage = document.querySelector("#country-language").value;
     const filterCapital = document.querySelector("#country-capital").value;
-    const filterPhone = document.querySelector("#country-phone").value;
     const showFields = document.querySelectorAll("input[name='fields']");
 
     let apiUrl;
-
-    selectedFields = [];
+    let selectedFields = [];
 
     for (const field of showFields) {
         if (field.checked) {
@@ -111,9 +97,6 @@ document.querySelector("#country-form").addEventListener("submit", (event) => {
         apiUrl = new URL("https://restcountries.com/v3.1/capital/" + filterCapital);
         
     }
-    else if (filterPhone.length > 0) {
-        console.log("TODO!");
-    }
 
     if (apiUrl !== undefined) {
         if (selectedFields.length > 0) {
@@ -124,14 +107,19 @@ document.querySelector("#country-form").addEventListener("submit", (event) => {
     }
 });
 
-
-
 ////////////////////////////////////////////////////////////////////////////////////////
-// Fyll i breeds, category och countries menyerna med giltiga värden när sidan laddats
-document.addEventListener("DOMContentLoaded", (event) => {
-   fetchAPI("https://dog.ceo/api/breeds/list/all", buildDogBreedsMenu);    
-   fetchAPI("https://api.chucknorris.io/jokes/categories", buildChuckCategoryMenu);
-   fetchAPI("https://restcountries.com/v3.1/all?fields=cca2,name", buildCountryMenu);
+// Väljare för sök-kriterier för länder
+document.querySelector("#country-search").addEventListener("change", (event) => {
+    const elements = document.querySelectorAll(".filter");
+    for (const element of elements) {
+        if (element.id != event.currentTarget.value) {
+            element.classList.remove("show");
+            element.value = "";
+        }
+        else {
+            element.classList.add("show");
+        }
+    }
 });
 
 
@@ -173,10 +161,16 @@ function buildChuckCategoryMenu(jokeCategories) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
-// Fyll i länder-menyn
-function buildCountryMenu(countries) {
+// Fyll i värden för länder-filtrets menyer
+function buildCountryMenus(countries) {
     const countrySelect = document.querySelector("#country-name");
+    const languageSelect = document.querySelector("#country-language");
+    const capitalSelect = document.querySelector("#country-capital");
 
+    let languageList = [];
+    let capitalList = [];
+
+    // Sortera länder efter kort namn i bokstavsordning
     countries.sort(function(a,b) {
         if (a.name.common > b.name.common) {
             return 1;
@@ -189,11 +183,49 @@ function buildCountryMenu(countries) {
         }
     });
 
+    
     for (const country of countries) {
+        // Namn-menyn
         const countryOption = document.createElement("option");
         countryOption.value = country.cca2;
         countryOption.innerText = country.name.common;
         countrySelect.appendChild(countryOption);
+
+        // Samla ihop språk utan dubletter
+        if (country.languages !== undefined) {
+            for (const lang in country.languages) {
+                if (!languageList.includes(country.languages[lang]) && (country.languages[lang].length > 0)) {
+                    languageList.push(country.languages[lang]);
+                }
+            }
+        }
+
+        // Samla ihop huvudstäder utan dubletter
+        if (country.capital !== undefined) {
+            if (!capitalList.includes(country.capital) && (country.capital.length > 0)) {
+                capitalList.push(country.capital);
+            }
+        }
+    }
+
+    // Sortera val i bokstavs/nummer-ordning innan menyerna byggs
+    languageList.sort();
+    capitalList.sort();
+
+    // Bygg språk-menyn
+    for (const language of languageList) {
+        const langOption = document.createElement("option");
+        langOption.value = language;
+        langOption.innerText = language;
+        languageSelect.appendChild(langOption);
+    }
+
+    // Bygg huvudstad-menyn
+    for (const capital of capitalList) {
+        const capitalOption = document.createElement("option");
+        capitalOption.value = capital;
+        capitalOption.innerText = capital;
+        capitalSelect.appendChild(capitalOption);
     }
 }
 
@@ -295,14 +327,14 @@ function showCountry(countries) {
         const countryBox = document.createElement("div");
         countryBox.classList.add("countrybox");
 
-        if (selectedFields.includes("flags")) {
+        if (country.flags !== undefined) {
             const flagImg = document.createElement("img");
             flagImg.classList.add("flagbox");
             flagImg.src = country.flags.png;
             flagImg.alt = country.flags.alt;
             countryBox.appendChild(flagImg);
         }
-        if (selectedFields.includes("name")) {
+        if (country.name !== undefined) {
             const nameField = document.createElement("h3");
             const nameNative = document.createElement("div");
 
@@ -318,22 +350,22 @@ function showCountry(countries) {
             countryBox.appendChild(nameField);
             countryBox.appendChild(nameNative);
         }
-        if (selectedFields.includes("region")) {
+        if (country.region !== undefined) {
             const regionField = document.createElement("div");
             regionField.innerHTML = `<strong>Region:</strong> ${country.region}`;
             countryBox.appendChild(regionField);
         }
-        if (selectedFields.includes("capital")) {
+        if (country.capital !== undefined) {
             const regionField = document.createElement("div");
             regionField.innerHTML = `<strong>Capital:</strong> ${country.capital}`;
             countryBox.appendChild(regionField);
         }
-        if (selectedFields.includes("population")) {
+        if (country.population !== undefined) {
             const popField = document.createElement("div");
             popField.innerHTML = `<strong>Population:</strong> ${country.population}`;
             countryBox.appendChild(popField);
         }
-        if (selectedFields.includes("timezones")) {
+        if (country.timezones !== undefined) {
             const timeZones = document.createElement("ul");
             const timeZoneTitle = document.createElement("div");
             timeZoneTitle.innerText = "Time zone(s):";
@@ -346,7 +378,7 @@ function showCountry(countries) {
             countryBox.appendChild(timeZoneTitle);
             countryBox.appendChild(timeZones);
         }
-        if (selectedFields.includes("languages")) {
+        if (country.languages !== undefined) {
             const langList = document.createElement("ul");
             const langsTitle = document.createElement("div");
             langsTitle.innerText = "Language(s):";

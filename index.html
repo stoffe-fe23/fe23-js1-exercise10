@@ -63,11 +63,14 @@
         <select id="country-name" name="country-name" class="filter show">
           <option value="">-- ANY --</option>
         </select>
-        <input type="text" id="country-language" name="country-language" class="filter" />
-        <input type="text" id="country-capital" name="country-capital" class="filter" />
-        <input type="text" id="country-phone" name="country-phone" class="filter" />
+        <select id="country-language" name="country-language" class="filter">
+          <option value="">-- SELECT --</option>
+        </select>
+        <select id="country-capital" name="country-capital" class="filter">
+          <option value="">-- SELECT --</option>
+        </select>
         <fieldset>
-          <h3>Show information</h3>
+          <h3>Get information:</h3>
           <input type="checkbox" checked name="fields" id="field-name" value="name" /><label for="field-name">Name</label>
           <input type="checkbox" checked name="fields" id="field-population" value="population" /><label for="field-population">Population</label>
           <input type="checkbox" checked name="fields" id="field-timezone" value="timezones" /><label for="field-timezone">Timezone</label>

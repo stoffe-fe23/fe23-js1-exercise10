@@ -111,8 +111,16 @@ select,
   display: inline;
 }
 
+#country-container fieldset {
+  border: 0px;
+}
+
 #country-container fieldset label {
   margin-right: 2rem;
+}
+
+#country-container fieldset h3 {
+  margin: 0px;
 }
 
 .flagbox {
