@@ -396,7 +396,7 @@ async function fetchAPI(fetchURL, callbackFunc, errorFunc=errorHandler) {
     try {
         const response = await fetch(fetchURL);
         if (!response.ok) 
-            throw new Error(`Fetch error: ${response.status}`);
+            throw new Error(`Fetch error: ${response.status} ${response.statusText}`);
         const result = await response.json();
         callbackFunc(result);
     }
