@@ -1,8 +1,8 @@
 
 // Hämta tillåtna värden och bygg filter-menyer
-fetchAPI("https://dog.ceo/api/breeds/list/all", buildDogBreedsMenu);    
-fetchAPI("https://api.chucknorris.io/jokes/categories", buildChuckCategoryMenu);
-fetchAPI("https://restcountries.com/v3.1/all?fields=cca2,name,languages,capital", buildCountryMenus);
+fetchJSON("https://dog.ceo/api/breeds/list/all", buildDogBreedsMenu);    
+fetchJSON("https://api.chucknorris.io/jokes/categories", buildChuckCategoryMenu);
+fetchJSON("https://restcountries.com/v3.1/all?fields=cca2,name,languages,capital", buildCountryMenus);
 
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -26,7 +26,7 @@ document.querySelector("#beer-form").addEventListener("submit", (event) => {
         apiUrl.searchParams.append("brewed_before", inputBrewed);
     }
     
-    fetchAPI(apiUrl, showBeer);
+    fetchJSON(apiUrl, showBeer);
 });
 
 
@@ -40,11 +40,11 @@ document.querySelector("#dog-form").addEventListener("submit", (event) => {
 
     if ((inputBreed.length > 0) && (inputCount > 0)) {
         const apiUrl = new URL(`https://dog.ceo/api/breed/${inputBreed}/images/random/${inputCount}`);
-        fetchAPI(apiUrl, showDogs);
+        fetchJSON(apiUrl, showDogs);
     }
     else if (inputCount > 0) {
         const apiUrl = new URL(`https://dog.ceo/api/breeds/image/random/${inputCount}`);
-        fetchAPI(apiUrl, showDogs);
+        fetchJSON(apiUrl, showDogs);
     }
 });
 
@@ -62,7 +62,7 @@ document.querySelector("#chuck-form").addEventListener("submit", (event) => {
         apiUrl.searchParams.append("category", selectedCategory);
     }
 
-    fetchAPI(apiUrl, showJoke);
+    fetchJSON(apiUrl, showJoke);
 });
 
 
@@ -103,7 +103,7 @@ document.querySelector("#country-form").addEventListener("submit", (event) => {
             apiUrl.searchParams.append("fields", selectedFields.join(","));
         }
 
-       fetchAPI(apiUrl, showCountry);
+       fetchJSON(apiUrl, showCountry);
     }
 });
 
@@ -392,7 +392,9 @@ function showCountry(countries) {
 
 ////////////////////////////////////////////////////////////////////////////////////////
 // Hämta och returnera data från API
-async function fetchAPI(fetchURL, callbackFunc, errorFunc=errorHandler) {
+
+// Async/await variant
+async function fetchJSON(fetchURL, callbackFunc, errorFunc=errorHandler) {
     try {
         const response = await fetch(fetchURL);
         if (!response.ok) 
@@ -405,7 +407,26 @@ async function fetchAPI(fetchURL, callbackFunc, errorFunc=errorHandler) {
     }
 }
 
+
 function errorHandler(error) {
-    console.log("FetchAPI Error", error);
+    console.log("fetchJSON Error", error);
     alert("Problem att hämta från API: " + error);
 }
+
+// Promise chain variant
+/*
+function fetchJSON(fetchURL, callbackFunc, errorFunc=errorHandler) {
+    fetch(fetchURL)
+    .then((response) => { 
+        if (!response.ok) 
+        throw new Error(`Fetch error: ${response.status} ${response.statusText}`);
+        return response.json(); 
+    })
+    .then((responseObj) => { 
+        callbackFunc(responseObj);
+    })
+    .catch((error) => {
+        errorFunc(error); 
+    });
+}
+*/
