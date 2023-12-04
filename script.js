@@ -1,6 +1,6 @@
 
 // Hämta tillåtna värden och bygg filter-menyer
-fetchJSON("https://dog.ceo/api/breeds/list/all", buildDogBreedsMenu);    
+fetchJSON("https://dog.ceo/api/breeds/list/all", buildDogBreedsMenu);
 fetchJSON("https://api.chucknorris.io/jokes/categories", buildChuckCategoryMenu);
 fetchJSON("https://restcountries.com/v3.1/all?fields=cca2,name,languages,capital", buildCountryMenus);
 
@@ -9,7 +9,7 @@ fetchJSON("https://restcountries.com/v3.1/all?fields=cca2,name,languages,capital
 // Submit-handler för filter-formuläret för öl
 document.querySelector("#beer-form").addEventListener("submit", (event) => {
     event.preventDefault();
-    
+
     const inputName = document.querySelector("#beer_name").value;
     const inputFood = document.querySelector("#food").value;
     const inputBrewed = document.querySelector("#brewed_before").value;
@@ -25,7 +25,7 @@ document.querySelector("#beer-form").addEventListener("submit", (event) => {
     if (inputBrewed.length > 0) {
         apiUrl.searchParams.append("brewed_before", inputBrewed);
     }
-    
+
     fetchJSON(apiUrl, showBeer);
 });
 
@@ -34,16 +34,18 @@ document.querySelector("#beer-form").addEventListener("submit", (event) => {
 // Submit-handler för filter-formuläret för hundar
 document.querySelector("#dog-form").addEventListener("submit", (event) => {
     event.preventDefault();
-    
+
     const inputBreed = document.querySelector("#dog-breed").value;
     const inputCount = document.querySelector("#dog-amount").value;
 
     if ((inputBreed.length > 0) && (inputCount > 0)) {
         const apiUrl = new URL(`https://dog.ceo/api/breed/${inputBreed}/images/random/${inputCount}`);
+        console.log(apiUrl);
         fetchJSON(apiUrl, showDogs);
     }
     else if (inputCount > 0) {
         const apiUrl = new URL(`https://dog.ceo/api/breeds/image/random/${inputCount}`);
+        console.log(apiUrl);
         fetchJSON(apiUrl, showDogs);
     }
 });
@@ -53,7 +55,7 @@ document.querySelector("#dog-form").addEventListener("submit", (event) => {
 // Submit-handler för ilter-formuläret för skämt
 document.querySelector("#chuck-form").addEventListener("submit", (event) => {
     event.preventDefault();
-    
+
     const selectedCategory = document.querySelector("#chuck-category").value;
 
     const apiUrl = new URL("https://api.chucknorris.io/jokes/random");
@@ -70,7 +72,7 @@ document.querySelector("#chuck-form").addEventListener("submit", (event) => {
 // Submit-handler för filter-formuläret länder
 document.querySelector("#country-form").addEventListener("submit", (event) => {
     event.preventDefault();
-    
+
     const filterCountry = document.querySelector("#country-name").value;
     const filterLanguage = document.querySelector("#country-language").value;
     const filterCapital = document.querySelector("#country-capital").value;
@@ -83,7 +85,7 @@ document.querySelector("#country-form").addEventListener("submit", (event) => {
         if (field.checked) {
             selectedFields.push(field.value);
         }
-        
+
     }
 
     if (filterCountry.length > 0) {
@@ -95,15 +97,15 @@ document.querySelector("#country-form").addEventListener("submit", (event) => {
     }
     else if (filterCapital.length > 0) {
         apiUrl = new URL("https://restcountries.com/v3.1/capital/" + filterCapital);
-        
+
     }
 
     if (apiUrl !== undefined) {
         if (selectedFields.length > 0) {
             apiUrl.searchParams.append("fields", selectedFields.join(","));
         }
-
-       fetchJSON(apiUrl, showCountry);
+        console.log("FETCH URL", apiUrl);
+        fetchJSON(apiUrl, showCountries);
     }
 });
 
@@ -171,7 +173,7 @@ function buildCountryMenus(countries) {
     let capitalList = [];
 
     // Sortera länder efter kort namn i bokstavsordning
-    countries.sort(function(a,b) {
+    countries.sort(function (a, b) {
         if (a.name.common > b.name.common) {
             return 1;
         }
@@ -183,7 +185,7 @@ function buildCountryMenus(countries) {
         }
     });
 
-    
+
     for (const country of countries) {
         // Namn-menyn
         const countryOption = document.createElement("option");
@@ -237,6 +239,10 @@ function showDogs(dogsResponse) {
     outBox.innerHTML = "";
     document.querySelector("#dog-results").innerHTML = `Results: ${dogsResponse.message.length}`;
 
+    if (dogsResponse.status == "error") {
+        throw new Error(dogsResponse.message);
+    }
+
     for (const dog of dogsResponse.message) {
         const dogBox = document.createElement("figure");
         const dogImage = document.createElement("img")
@@ -253,36 +259,40 @@ function showDogs(dogsResponse) {
 function showBeer(beers) {
     const outBox = document.querySelector("#beer-output");
     outBox.innerHTML = `Results: ${beers.length}`;
-  
+
     for (const beer of beers) {
-      const beerBox = document.createElement("div");
-      beerBox.classList.add("beerbox");
-  
-      const beerName = document.createElement("h2");
-      const beerTag = document.createElement("div");
-      const beerBrewed = document.createElement("div");
-      const beerDesc = document.createElement("p");
-      const beerFood = document.createElement("ul");
-      const beerFoodTitle = document.createElement("h3");
-      const beerImage = document.createElement("img");
-  
-      beerImage.src = beer.image_url;
-      beerImage.classList.add("beerimage");
-      beerFoodTitle.innerText = "Food pairing";
-      beerName.innerText = beer.name;
-      beerTag.innerText = beer.tagline;
-      beerDesc.innerText = beer.description;
-      beerBrewed.innerHTML = `<strong>First brewed:</strong> ${beer.first_brewed}`;
-  
-      beerFood.appendChild(beerFoodTitle);
-      for (const pairing of beer.food_pairing) {
-        const foodItem = document.createElement("li");
-        foodItem.innerText = pairing;
-        beerFood.appendChild(foodItem);
-      }
-  
-      beerBox.append(beerImage, beerName, beerTag, beerDesc, beerFood, beerBrewed);
-      outBox.appendChild(beerBox);
+        const beerBox = document.createElement("div");
+        beerBox.classList.add("beerbox");
+
+        const beerName = document.createElement("h2");
+        const beerTag = document.createElement("div");
+        const beerBrewed = document.createElement("div");
+        const beerDesc = document.createElement("p");
+        const beerFood = document.createElement("ul");
+        const beerFoodTitle = document.createElement("h3");
+        const beerImage = document.createElement("img");
+
+        beerImage.src = beer.image_url;
+        beerImage.classList.add("beerimage");
+        beerFoodTitle.innerText = "Food pairing";
+        beerName.innerText = beer.name;
+        beerTag.innerText = beer.tagline;
+        beerDesc.innerText = beer.description;
+        beerBrewed.innerHTML = `<strong>First brewed:</strong> ${beer.first_brewed}`;
+
+        if (beer.image_url == null) {
+            beerImage.style.display = "none";
+        }
+
+        beerFood.appendChild(beerFoodTitle);
+        for (const pairing of beer.food_pairing) {
+            const foodItem = document.createElement("li");
+            foodItem.innerText = pairing;
+            beerFood.appendChild(foodItem);
+        }
+
+        beerBox.append(beerImage, beerName, beerTag, beerDesc, beerFood, beerBrewed);
+        outBox.appendChild(beerBox);
     }
 }
 
@@ -311,8 +321,7 @@ function showJoke(joke) {
 
 ////////////////////////////////////////////////////////////////////////////////////////
 // Visa länder på sidan utifrån valda filter
-function showCountry(countries) {
-    console.log("COUNTRY RESULT", countries);
+function showCountries(countries) {
     const outBox = document.querySelector("#country-output");
     outBox.innerHTML = "";
 
@@ -333,13 +342,13 @@ function showCountry(countries) {
 
             nameNative.classList.add("nativenames");
             nameField.innerText = country.name.common;
-            
-            for (const inLanguage in country.name.nativeName) {  
+
+            for (const inLanguage in country.name.nativeName) {
                 const nameRow = document.createElement("div");
                 nameRow.innerText = country.name.nativeName[inLanguage].official;
                 nameNative.appendChild(nameRow);
             }
-            
+
             countryBox.appendChild(nameField);
             countryBox.appendChild(nameNative);
         }
@@ -392,12 +401,13 @@ function showCountry(countries) {
 
 ////////////////////////////////////////////////////////////////////////////////////////
 // Hämta och returnera data från API
+// Användning: fetchJSON("https://dog.ceo/api/breeds/list/all", buildDogBreedsMenu);
 
 // Async/await variant
-async function fetchJSON(fetchURL, callbackFunc, errorFunc=errorHandler) {
+async function fetchJSON(fetchURL, callbackFunc, errorFunc = errorHandler) {
     try {
         const response = await fetch(fetchURL);
-        if (!response.ok) 
+        if (!response.ok)
             throw new Error(`Fetch error: ${response.status} ${response.statusText}`);
         const result = await response.json();
         callbackFunc(result);
@@ -408,25 +418,24 @@ async function fetchJSON(fetchURL, callbackFunc, errorFunc=errorHandler) {
 }
 
 
+// Promise chain variant
+function promiseFetchJSON(fetchURL, callbackFunc, errorFunc = errorHandler) {
+    fetch(fetchURL)
+        .then((response) => {
+            if (!response.ok)
+                throw new Error(`Fetch error: ${response.status} ${response.statusText}`);
+            return response.json();
+        })
+        .then((responseObj) => {
+            callbackFunc(responseObj);
+        })
+        .catch((error) => {
+            errorFunc(error);
+        });
+}
+
+
 function errorHandler(error) {
     console.log("fetchJSON Error", error);
     alert("Problem att hämta från API: " + error);
 }
-
-// Promise chain variant
-/*
-function fetchJSON(fetchURL, callbackFunc, errorFunc=errorHandler) {
-    fetch(fetchURL)
-    .then((response) => { 
-        if (!response.ok) 
-        throw new Error(`Fetch error: ${response.status} ${response.statusText}`);
-        return response.json(); 
-    })
-    .then((responseObj) => { 
-        callbackFunc(responseObj);
-    })
-    .catch((error) => {
-        errorFunc(error); 
-    });
-}
-*/
