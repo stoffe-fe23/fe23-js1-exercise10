@@ -1,3 +1,7 @@
+/*
+    Javascript 1: Övningsuppgift 10 och 11
+*/
+
 * {
   box-sizing: border-box;
 }
@@ -31,7 +35,14 @@ body {
   background-color: rgb(220, 255, 255);
 }
 
+#bored-container {
+  margin: 0.5rem;
+  padding: 1rem;
+  background-color: rgb(227, 255, 220);
+}
+
 form,
+#bored-form,
 #chuck-form,
 #beer-form,
 #dog-form {
@@ -41,12 +52,18 @@ form,
 }
 
 select,
+#bored-form input,
 #chuck-form input,
 #beer-form input,
 #dog-form input {
   margin-right: 2rem;
 }
 
+#bored-form input[type="checkbox"] {
+  margin-right: 0px;
+}
+
+#bored-output,
 #chuck-output,
 #beer-output,
 #dog-output {
@@ -158,4 +175,40 @@ select,
 .nativenames {
   margin-bottom: 1rem;
   font-style: italic;
+}
+
+.bored-activity {
+  padding: 1rem;
+  margin: 0.5rem;
+  background-color: black;
+  color: white;
+  max-width: 800px;
+}
+
+.bored-activity h3 {
+  margin: 0px;
+  font-size: 2rem;
+}
+
+.activity-type {
+  font-weight: bold;
+  text-transform: capitalize;
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+
+.activity-cost-free {
+  color: lightgreen;
+}
+.activity-cost-cheap {
+  color: green;
+}
+.activity-cost-midlow {
+  color: yellow;
+}
+.activity-cost-midhigh {
+  color: orange;
+}
+.activity-cost-high {
+  color: red;
 }

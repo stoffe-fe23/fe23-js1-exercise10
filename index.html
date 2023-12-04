@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Övning 10 - API</title>
+    <title>Övning 10 och 11 - API</title>
     <link rel="stylesheet" href="style.css" />
     <script src="script.js" defer></script>
   </head>
@@ -82,6 +82,30 @@
         <button id="country-submit">Search</button>
       </form>
       <div id="country-output"></div>
+    </div>
+    <!-- CHUCK NORRIS -->
+    <div id="bored-container">
+      <h2>Bored API</h2>
+      <form id="bored-form">
+        <label for="bored-category">Activity type:</label>
+        <select id="bored-category" name="bored-category">
+          <option value="">-- ANY --</option>
+          <option value="education">Education</option>
+          <option value="recreational">Recreational</option>
+          <option value="social">Social</option>
+          <option value="diy">Do it yourself</option>
+          <option value="charity">Charity</option>
+          <option value="cooking">Cooking</option>
+          <option value="relaxation">Relaxation</option>
+          <option value="music">Music</option>
+          <option value="busywork">Busywork</option>
+        </select>
+        <label for="bored-people">Participants:</label>
+        <input type="number" id="bored-people" name="bored-people" min="0" value="0" />
+        <input type="checkbox" name="bored-free" id="bored-free" value="free" /><label for="bored-free">Only free activities</label>
+        <button id="bored-submit">Search!</button>
+      </form>
+      <div id="bored-output"></div>
     </div>
   </body>
 </html>

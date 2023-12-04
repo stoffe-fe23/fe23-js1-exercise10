@@ -1,3 +1,7 @@
+/*
+    Javascript 1: Övningsuppgift 10 och 11
+*/ 
+
 
 // Hämta tillåtna värden och bygg filter-menyer
 fetchJSON("https://dog.ceo/api/breeds/list/all", buildDogBreedsMenu);
@@ -125,6 +129,30 @@ document.querySelector("#country-search").addEventListener("change", (event) => 
             element.classList.add("show");
         }
     }
+});
+
+////////////////////////////////////////////////////////////////////////////////////////
+// Submit-handler för filter-formuläret för Bored
+document.querySelector("#bored-form").addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    const inputCategory = document.querySelector("#bored-category").value;
+    const inputParticipants = document.querySelector("#bored-people").value;
+    const inputFree = document.querySelector("#bored-free").checked;
+
+    const apiUrl = new URL(`http://www.boredapi.com/api/activity`);
+
+    if (inputCategory.length > 0) {
+        apiUrl.searchParams.append("type", inputCategory);
+    }
+    if (inputParticipants > 0) {
+        apiUrl.searchParams.append("participants", inputParticipants);
+    }
+    if (inputFree) {
+        apiUrl.searchParams.append("price", "0.0");
+    }
+
+    fetchJSON(apiUrl, showBoredActivities);
 });
 
 
@@ -415,6 +443,55 @@ function showCountries(countries) {
 
         outBox.appendChild(countryBox);
     }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////
+// Visa en aktivitet från BoredAPI
+function showBoredActivities(response) {
+    const outBox = document.querySelector("#bored-output");
+    outBox.innerHTML = "";
+
+    const activityBox = document.createElement("div");
+    activityBox.classList.add("bored-activity");
+
+    if (response.activity !== undefined) {
+        const activityTitle = document.createElement("h3");
+        const activityType = document.createElement("div");
+        const activityPrice = document.createElement("div");
+        const activityPeople = document.createElement("div");
+        
+        activityTitle.innerText = response.activity;
+        activityType.innerText = response.type;
+        activityPrice.innerHTML = `<strong>Cost: </strong>` + getActivityPriceDescription(response.price);
+        activityPeople.innerHTML = `<strong>Participants: </strong>` + response.participants;
+
+        activityType.classList.add("activity-type");
+
+        activityBox.append(activityTitle, activityType, activityPrice, activityPeople);
+    }
+    else {
+        outBox.appendChild(document.createTextNode("Unable to find any activities!"));
+    }
+
+    outBox.appendChild(activityBox);
+    console.log(response);
+}
+
+function getActivityPriceDescription(priceFactor) {
+    if ((priceFactor > 0) && (priceFactor < 0.25)) {
+        return `<span class="activity-cost-cheap">Cheap</span>`;
+    }
+    else if ((priceFactor >= 0.25) && (priceFactor < 0.5)) {
+        return `<span class="activity-cost-midlow">Moderately cheap</span>`;
+    }
+    else if ((priceFactor >= 0.5) && (priceFactor < 0.75)) {
+        return `<span class="activity-cost-midhigh">Fairly expansive</span>`;
+    }
+    else if (priceFactor >= 0.75)  {
+        return `<span class="activity-cost-high">Very expensive</span>`;
+    }
+    return `<span class="activity-cost-free">Free!</span>`;
 }
 
 
