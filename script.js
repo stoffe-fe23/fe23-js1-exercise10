@@ -5,6 +5,11 @@ fetchJSON("https://api.chucknorris.io/jokes/categories", buildChuckCategoryMenu)
 fetchJSON("https://restcountries.com/v3.1/all?fields=cca2,name,languages,capital", buildCountryMenus);
 
 
+/***************************************************************************************
+ * EVENT HANDLERS
+ ***************************************************************************************/
+
+
 ////////////////////////////////////////////////////////////////////////////////////////
 // Submit-handler för filter-formuläret för öl
 document.querySelector("#beer-form").addEventListener("submit", (event) => {
@@ -100,17 +105,15 @@ document.querySelector("#country-form").addEventListener("submit", (event) => {
 
     }
 
-    if (apiUrl !== undefined) {
-        if (selectedFields.length > 0) {
-            apiUrl.searchParams.append("fields", selectedFields.join(","));
-        }
-        console.log("FETCH URL", apiUrl);
+    if ((apiUrl !== undefined) && (selectedFields.length > 0)) {
+        apiUrl.searchParams.append("fields", selectedFields.join(","));
         fetchJSON(apiUrl, showCountries);
+        console.log("FETCH URL", apiUrl);
     }
 });
 
 ////////////////////////////////////////////////////////////////////////////////////////
-// Väljare för sök-kriterier för länder
+// Val av sökfilter för länder
 document.querySelector("#country-search").addEventListener("change", (event) => {
     const elements = document.querySelectorAll(".filter");
     for (const element of elements) {
@@ -125,11 +128,20 @@ document.querySelector("#country-search").addEventListener("change", (event) => 
 });
 
 
+/***************************************************************************************
+ * FUNKTIONER
+ ***************************************************************************************/
+
+
 ////////////////////////////////////////////////////////////////////////////////////////
-// Fyll i dog breed menyn
+// Fyll i giltiga värden i dog breed menyn
 function buildDogBreedsMenu(response) {
     const dogBreedSelect = document.querySelector("#dog-breed");
     const dogBreeds = response.message;
+
+    if (response.status == "error") {
+        throw new Error(response.message);
+    }
 
     for (const dogBreed in dogBreeds) {
         const breedOption = document.createElement("option");
@@ -233,15 +245,16 @@ function buildCountryMenus(countries) {
 
 
 ////////////////////////////////////////////////////////////////////////////////////////
-// Visa info om hund(ar) på sidan
+// Visa bild på hund(ar) på sidan
 function showDogs(dogsResponse) {
     const outBox = document.querySelector("#dog-output");
     outBox.innerHTML = "";
-    document.querySelector("#dog-results").innerHTML = `Results: ${dogsResponse.message.length}`;
-
+    
     if (dogsResponse.status == "error") {
         throw new Error(dogsResponse.message);
     }
+
+    document.querySelector("#dog-results").innerHTML = `Results: ${dogsResponse.message.length}`;
 
     for (const dog of dogsResponse.message) {
         const dogBox = document.createElement("figure");
@@ -298,7 +311,7 @@ function showBeer(beers) {
 
 
 ////////////////////////////////////////////////////////////////////////////////////////
-// Visa ett Chuck Norris skämt
+// Visa ett Chuck Norris-skämt
 function showJoke(joke) {
     const outBox = document.querySelector("#chuck-output");
 
@@ -320,7 +333,7 @@ function showJoke(joke) {
 
 
 ////////////////////////////////////////////////////////////////////////////////////////
-// Visa länder på sidan utifrån valda filter
+// Visa länder på sidan utifrån valda kriterier
 function showCountries(countries) {
     const outBox = document.querySelector("#country-output");
     outBox.innerHTML = "";
@@ -364,7 +377,13 @@ function showCountries(countries) {
         }
         if (country.population !== undefined) {
             const popField = document.createElement("div");
-            popField.innerHTML = `<strong>Population:</strong> ${country.population}`;
+            let popRounded = parseInt(country.population);
+
+            if (popRounded > 1000000) {
+                popRounded = (popRounded / 1000000).toFixed(1) + " million";
+            }
+
+            popField.innerHTML = `<strong>Population:</strong> ${popRounded}`;
             countryBox.appendChild(popField);
         }
         if (country.timezones !== undefined) {
@@ -401,14 +420,14 @@ function showCountries(countries) {
 
 ////////////////////////////////////////////////////////////////////////////////////////
 // Hämta och returnera data från API
-// Användning: fetchJSON("https://dog.ceo/api/breeds/list/all", buildDogBreedsMenu);
+// Exempel: fetchJSON("https://dog.ceo/api/breeds/list/all", buildDogBreedsMenu);
 
 // Async/await variant
 async function fetchJSON(fetchURL, callbackFunc, errorFunc = errorHandler) {
     try {
         const response = await fetch(fetchURL);
         if (!response.ok)
-            throw new Error(`Fetch error: ${response.status} ${response.statusText}`);
+            throw new Error(`Fetch error: ${response.status} - ${response.statusText}`);
         const result = await response.json();
         callbackFunc(result);
     }
