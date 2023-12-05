@@ -15,6 +15,25 @@ fetchJSON("https://restcountries.com/v3.1/all?fields=cca2,name,languages,capital
 
 
 ////////////////////////////////////////////////////////////////////////////////////////
+// Submit-handler för filter-formuläret för hundar
+document.querySelector("#dog-form").addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    const inputBreed = document.querySelector("#dog-breed").value;
+    const inputCount = document.querySelector("#dog-amount").value;
+
+    if ((inputBreed.length > 0) && (inputCount > 0)) {
+        const apiUrl = new URL(`https://dog.ceo/api/breed/${inputBreed}/images/random/${inputCount}`);
+        fetchJSON(apiUrl, showDogs);
+    }
+    else if (inputCount > 0) {
+        const apiUrl = new URL(`https://dog.ceo/api/breeds/image/random/${inputCount}`);
+        fetchJSON(apiUrl, showDogs);
+    }
+});
+
+
+////////////////////////////////////////////////////////////////////////////////////////
 // Submit-handler för filter-formuläret för öl
 document.querySelector("#beer-form").addEventListener("submit", (event) => {
     event.preventDefault();
@@ -40,28 +59,7 @@ document.querySelector("#beer-form").addEventListener("submit", (event) => {
 
 
 ////////////////////////////////////////////////////////////////////////////////////////
-// Submit-handler för filter-formuläret för hundar
-document.querySelector("#dog-form").addEventListener("submit", (event) => {
-    event.preventDefault();
-
-    const inputBreed = document.querySelector("#dog-breed").value;
-    const inputCount = document.querySelector("#dog-amount").value;
-
-    if ((inputBreed.length > 0) && (inputCount > 0)) {
-        const apiUrl = new URL(`https://dog.ceo/api/breed/${inputBreed}/images/random/${inputCount}`);
-        console.log(apiUrl);
-        fetchJSON(apiUrl, showDogs);
-    }
-    else if (inputCount > 0) {
-        const apiUrl = new URL(`https://dog.ceo/api/breeds/image/random/${inputCount}`);
-        console.log(apiUrl);
-        fetchJSON(apiUrl, showDogs);
-    }
-});
-
-
-////////////////////////////////////////////////////////////////////////////////////////
-// Submit-handler för ilter-formuläret för skämt
+// Submit-handler för filter-formuläret för skämt
 document.querySelector("#chuck-form").addEventListener("submit", (event) => {
     event.preventDefault();
 
@@ -94,7 +92,6 @@ document.querySelector("#country-form").addEventListener("submit", (event) => {
         if (field.checked) {
             selectedFields.push(field.value);
         }
-
     }
 
     if (filterCountry.length > 0) {
@@ -112,12 +109,12 @@ document.querySelector("#country-form").addEventListener("submit", (event) => {
     if ((apiUrl !== undefined) && (selectedFields.length > 0)) {
         apiUrl.searchParams.append("fields", selectedFields.join(","));
         fetchJSON(apiUrl, showCountries);
-        console.log("FETCH URL", apiUrl);
     }
 });
 
+
 ////////////////////////////////////////////////////////////////////////////////////////
-// Val av sökfilter för länder
+// Val av aktivt sökfilter för länder
 document.querySelector("#country-search").addEventListener("change", (event) => {
     const elements = document.querySelectorAll(".filter");
     for (const element of elements) {
@@ -130,6 +127,7 @@ document.querySelector("#country-search").addEventListener("change", (event) => 
         }
     }
 });
+
 
 ////////////////////////////////////////////////////////////////////////////////////////
 // Submit-handler för filter-formuläret för Bored
@@ -162,7 +160,7 @@ document.querySelector("#bored-form").addEventListener("submit", (event) => {
 
 
 ////////////////////////////////////////////////////////////////////////////////////////
-// Fyll i giltiga värden i dog breed menyn
+// Skapa giltiga värden i dog breed select-menyn
 function buildDogBreedsMenu(response) {
     const dogBreedSelect = document.querySelector("#dog-breed");
     const dogBreeds = response.message;
@@ -190,9 +188,13 @@ function buildDogBreedsMenu(response) {
 
 
 ////////////////////////////////////////////////////////////////////////////////////////
-// Fyll i skämt-kategorimenyn 
+// Fyll i kategorimenyn för Chuck Norris-skämt
 function buildChuckCategoryMenu(jokeCategories) {
     const categorySelect = document.querySelector("#chuck-category");
+
+    if (jokeCategories.length < 1) {
+        throw new Error("No Chuck Norris joke categories found!");
+    }
 
     for (const jokeCategory of jokeCategories) {
         const jokeOption = document.createElement("option");
@@ -203,7 +205,7 @@ function buildChuckCategoryMenu(jokeCategories) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
-// Fyll i värden för länder-filtrets menyer
+// Fyll i giltiga värden för länder-filtrets select-menyer (name, language, capital)
 function buildCountryMenus(countries) {
     const countrySelect = document.querySelector("#country-name");
     const languageSelect = document.querySelector("#country-language");
@@ -212,7 +214,11 @@ function buildCountryMenus(countries) {
     let languageList = [];
     let capitalList = [];
 
-    // Sortera länder efter kort namn i bokstavsordning
+    if ((countries.length < 1) || (countries[0].name === undefined)) {
+        throw new Error("Unable to load country data!");
+    }
+
+    // Sortera länderna efter kort namn i bokstavsordning
     countries.sort(function (a, b) {
         if (a.name.common > b.name.common) {
             return 1;
@@ -225,15 +231,14 @@ function buildCountryMenus(countries) {
         }
     });
 
-
     for (const country of countries) {
-        // Namn-menyn
+        // Bygg landsnamn-menyn
         const countryOption = document.createElement("option");
         countryOption.value = country.cca2;
         countryOption.innerText = country.name.common;
         countrySelect.appendChild(countryOption);
 
-        // Samla ihop språk utan dubletter
+        // Samla ihop alla språk (utan dubletter)
         if (country.languages !== undefined) {
             for (const lang in country.languages) {
                 if (!languageList.includes(country.languages[lang]) && (country.languages[lang].length > 0)) {
@@ -242,7 +247,7 @@ function buildCountryMenus(countries) {
             }
         }
 
-        // Samla ihop huvudstäder utan dubletter
+        // Samla ihop alla huvudstäder
         if (country.capital !== undefined) {
             if (!capitalList.includes(country.capital) && (country.capital.length > 0)) {
                 capitalList.push(country.capital);
@@ -250,7 +255,7 @@ function buildCountryMenus(countries) {
         }
     }
 
-    // Sortera val i bokstavs/nummer-ordning innan menyerna byggs
+    // Sortera val i bokstavsordning innan menyerna byggs
     languageList.sort();
     capitalList.sort();
 
@@ -377,6 +382,7 @@ function showCountries(countries) {
             flagImg.alt = country.flags.alt;
             countryBox.appendChild(flagImg);
         }
+
         if (country.name !== undefined) {
             const nameField = document.createElement("h3");
             const nameNative = document.createElement("div");
@@ -390,30 +396,35 @@ function showCountries(countries) {
                 nameNative.appendChild(nameRow);
             }
 
-            countryBox.appendChild(nameField);
-            countryBox.appendChild(nameNative);
+            countryBox.append(nameField, nameNative);
         }
+
         if (country.region !== undefined) {
             const regionField = document.createElement("div");
             regionField.innerHTML = `<strong>Region:</strong> ${country.region}`;
             countryBox.appendChild(regionField);
         }
+
         if (country.capital !== undefined) {
             const regionField = document.createElement("div");
             regionField.innerHTML = `<strong>Capital:</strong> ${country.capital}`;
             countryBox.appendChild(regionField);
         }
+
         if (country.population !== undefined) {
             const popField = document.createElement("div");
             let popRounded = parseInt(country.population);
 
-            if (popRounded > 1000000) {
+            // Visa folkmängd i miljoner istället om landet har mer än 1 miljon invånare
+            if (popRounded >= 1000000) {
                 popRounded = (popRounded / 1000000).toFixed(1) + " million";
             }
 
             popField.innerHTML = `<strong>Population:</strong> ${popRounded}`;
             countryBox.appendChild(popField);
         }
+
+        // Tidszon
         if (country.timezones !== undefined) {
             const timeZones = document.createElement("ul");
             const timeZoneTitle = document.createElement("div");
@@ -424,9 +435,10 @@ function showCountries(countries) {
                 timeZone.innerText = timezone;
                 timeZones.appendChild(timeZone);
             }
-            countryBox.appendChild(timeZoneTitle);
-            countryBox.appendChild(timeZones);
+            countryBox.append(timeZoneTitle, timeZones);
         }
+
+        // Språk
         if (country.languages !== undefined) {
             const langList = document.createElement("ul");
             const langsTitle = document.createElement("div");
@@ -437,8 +449,7 @@ function showCountries(countries) {
                 langItem.innerText = country.languages[lang];
                 langList.appendChild(langItem);
             }
-            countryBox.appendChild(langsTitle);
-            countryBox.appendChild(langList);
+            countryBox.append(langsTitle, langList);
         }
 
         outBox.appendChild(countryBox);
@@ -475,9 +486,11 @@ function showBoredActivities(response) {
     }
 
     outBox.appendChild(activityBox);
-    console.log(response);
 }
 
+
+////////////////////////////////////////////////////////////////////////////////////////
+// Konvertera price factor (0.0 - 1.0) till något mer lättförståeligt.
 function getActivityPriceDescription(priceFactor) {
     if ((priceFactor > 0) && (priceFactor < 0.25)) {
         return `<span class="activity-cost-cheap">Cheap</span>`;
@@ -498,8 +511,6 @@ function getActivityPriceDescription(priceFactor) {
 ////////////////////////////////////////////////////////////////////////////////////////
 // Hämta och returnera data från API
 // Exempel: fetchJSON("https://dog.ceo/api/breeds/list/all", buildDogBreedsMenu);
-
-// Async/await variant
 async function fetchJSON(fetchURL, callbackFunc, errorFunc = errorHandler) {
     try {
         const response = await fetch(fetchURL);
@@ -514,7 +525,7 @@ async function fetchJSON(fetchURL, callbackFunc, errorFunc = errorHandler) {
 }
 
 
-// Promise chain variant
+// Alternativ: Promise chain variant
 function promiseFetchJSON(fetchURL, callbackFunc, errorFunc = errorHandler) {
     fetch(fetchURL)
         .then((response) => {
@@ -531,7 +542,9 @@ function promiseFetchJSON(fetchURL, callbackFunc, errorFunc = errorHandler) {
 }
 
 
+////////////////////////////////////////////////////////////////////////////////////////
+// Allmän felhanterare för hämtning/behandling av data - visa och logga felmeddelande
 function errorHandler(error) {
     console.log("fetchJSON Error", error);
-    alert("Problem att hämta från API: " + error);
+    alert("Problem vid hämtning från API: " + error);
 }

@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Övning 10 och 11 - API</title>
+    <title>Övning 10 och 11 - API &amp; asynkrona funktioner</title>
     <link rel="stylesheet" href="style.css" />
     <script src="script.js" defer></script>
   </head>
@@ -14,11 +14,11 @@
       <form id="dog-form">
         <label for="dog-breed">Show breed:</label>
         <select id="dog-breed" name="dog-breed">
-          <option value="">-- ALL --</option>
+          <option value="">-- ANY --</option>
         </select>
         <label for="dog-amount">Number of pictures:</label>
         <input type="number" id="dog-amount" name="dog-amount" min="1" max="20" value="1" />
-        <button id="dog-submit">Find random dogs!</button>
+        <button id="dog-submit">Find random dogs</button>
       </form>
       <div id="dog-results"></div>
       <div id="dog-output"></div>
@@ -33,7 +33,7 @@
         <input type="text" id="food" name="food" value="" />
         <label for="brewed_before">Brewed before (MM-YYYY):</label>
         <input type="text" id="brewed_before" name="brewed_before" value="" placeholder="11-2023" pattern="^(0[1-9]|1[0-2])-(18|19|20)\d{2}$" />
-        <button id="beer-submit">Search!</button>
+        <button id="beer-submit">Find beer</button>
       </form>
       <div id="beer-output"></div>
     </div>
@@ -58,7 +58,6 @@
           <option value="country-name">Country</option>
           <option value="country-language">Language</option>
           <option value="country-capital">Capital</option>
-          <option value="country-phone">Phone code</option>
         </select>
         <select id="country-name" name="country-name" class="filter show">
           <option value="">-- ANY --</option>
@@ -69,8 +68,9 @@
         <select id="country-capital" name="country-capital" class="filter">
           <option value="">-- SELECT --</option>
         </select>
+        <button id="country-submit">Find country</button>
         <fieldset>
-          <h3>Get information:</h3>
+          <h3>Show information:</h3>
           <input type="checkbox" checked name="fields" id="field-name" value="name" /><label for="field-name">Name</label>
           <input type="checkbox" checked name="fields" id="field-population" value="population" /><label for="field-population">Population</label>
           <input type="checkbox" checked name="fields" id="field-timezone" value="timezones" /><label for="field-timezone">Timezone</label>
@@ -79,15 +79,15 @@
           <input type="checkbox" checked name="fields" id="field-region" value="region" /><label for="field-region">Region</label>
           <input type="checkbox" checked name="fields" id="field-capital" value="capital" /><label for="field-capital">Capital</label>
         </fieldset>
-        <button id="country-submit">Search</button>
       </form>
       <div id="country-output"></div>
     </div>
-    <!-- CHUCK NORRIS -->
+    <!-- BORED ACTIVITY -->
     <div id="bored-container">
-      <h2>Bored API</h2>
+      <h2>Activity suggestions (Bored API)</h2>
       <form id="bored-form">
         <label for="bored-category">Activity type:</label>
+        <!-- Verkar inte finnas något sätt att dynamiskt hämta tillgängliga kategorier från APIet? Så hårdkodar dem här... -->
         <select id="bored-category" name="bored-category">
           <option value="">-- ANY --</option>
           <option value="education">Education</option>
@@ -102,8 +102,8 @@
         </select>
         <label for="bored-people">Participants:</label>
         <input type="number" id="bored-people" name="bored-people" min="0" value="0" />
-        <input type="checkbox" name="bored-free" id="bored-free" value="free" /><label for="bored-free">Only free activities</label>
-        <button id="bored-submit">Search!</button>
+        <div class="checkbox-wrapper"><input type="checkbox" name="bored-free" id="bored-free" value="free" /><label for="bored-free">Only free activities</label></div>
+        <button id="bored-submit">Find activity</button>
       </form>
       <div id="bored-output"></div>
     </div>

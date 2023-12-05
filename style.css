@@ -131,6 +131,8 @@ select,
 
 #country-container fieldset {
   border: 0px;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
 }
 
 #country-container fieldset label {
@@ -139,6 +141,8 @@ select,
 
 #country-container fieldset h3 {
   margin: 0px;
+  font-size: 1.2rem;
+  font-weight: 400;
 }
 
 .flagbox {
@@ -211,4 +215,14 @@ select,
 }
 .activity-cost-high {
   color: red;
+}
+
+.checkbox-wrapper {
+  display: inline-block;
+  margin-right: 2rem;
+}
+
+.checkbox-wrapper label {
+  margin-left: 0.4rem;
+  font-size: 0.9rem;
 }
